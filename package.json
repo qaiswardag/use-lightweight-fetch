@@ -1,0 +1,26 @@
+{
+  "name": "use-lightweight-fetch",
+  "version": "1.0.5",
+  "description": "Lightweight asynchronous data fetching hook for Vue 3.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qaiswardag/use-lightweight-fetch.git"
+  },
+  "keywords": [
+    "Vue3",
+    "Composition API",
+    "Fetch",
+    "Web",
+    "Hook"
+  ],
+  "author": "Qais Wardag",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/qaiswardag/use-lightweight-fetch/issues"
+  },
+  "homepage": "https://github.com/qaiswardag/use-lightweight-fetch#readme"
+}
