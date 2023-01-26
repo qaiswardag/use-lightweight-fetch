@@ -1,6 +1,6 @@
 {
   "name": "use-lightweight-fetch",
-  "version": "1.0.5",
+  "version": "1.1.1",
   "description": "Lightweight asynchronous data fetching hook for Vue 3.",
   "main": "index.js",
   "scripts": {
@@ -11,11 +11,13 @@
     "url": "git+https://github.com/qaiswardag/use-lightweight-fetch.git"
   },
   "keywords": [
+    "Fetch",
     "Vue3",
     "Composition API",
-    "Fetch",
-    "Web",
-    "Hook"
+    "Create",
+    "Read",
+    "Update",
+    "Delete"
   ],
   "author": "Qais Wardag",
   "license": "MIT",
