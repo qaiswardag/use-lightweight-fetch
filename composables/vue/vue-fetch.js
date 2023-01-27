@@ -1,10 +1,10 @@
 import { ref } from 'vue';
-import { usePromise } from '../helpers/use-promise';
+import { usePromise } from '../../helpers/use-promise';
 export const vueFetch = function vueFetch() {
-  // is loading, is error, fetched data
+  // is success, is loading, is error, fetched data
+  const isSuccess = ref(null);
   const isLoading = ref(null);
   const isError = ref(null);
-  const isSuccess = ref(null);
   const fetchedData = ref(null);
   // controller, additional time, abort time out
   const controller = new AbortController();
@@ -16,20 +16,13 @@ export const vueFetch = function vueFetch() {
     url,
     fetchOptions = {},
     customFetchOptions = {
-      loading,
       additionalCallTime,
       abortTimeoutTime,
     }
   ) {
     // set variables
-    isLoading.value = customFetchOptions.loading;
     abortTimeout.value = customFetchOptions.abortTimeoutTime;
     additionalTime.value = customFetchOptions.additionalCallTime;
-
-    // set is loading to null if not set
-    if (isLoading.value === undefined) {
-      isLoading.value = null;
-    }
 
     // set response timeout to 0 if not set
     if (additionalTime.value === undefined) {
@@ -46,6 +39,8 @@ export const vueFetch = function vueFetch() {
     }, abortTimeout.value);
 
     try {
+      // loading
+      isLoading.value = true;
       // promise
       const promise = usePromise(additionalTime.value);
       // wait for additional response time. additional time is set when calling the function
