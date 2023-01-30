@@ -1,10 +1,12 @@
 import { ref } from 'vue';
 import { usePromise } from '../../helpers/use-promise';
+import { isObject } from '../../helpers/is-object';
 export const vueFetch = function vueFetch() {
   // is success, is loading, is error, fetched data
-  const isSuccess = ref(null);
-  const isLoading = ref(null);
-  const isError = ref(null);
+  const isSuccess = ref(false);
+  const isLoading = ref(false);
+  const isError = ref(false);
+  const validationProperties = ref(null);
   const fetchedData = ref(null);
   // controller, additional time, abort time out
   const controller = new AbortController();
@@ -28,9 +30,9 @@ export const vueFetch = function vueFetch() {
     if (additionalTime.value === undefined) {
       additionalTime.value = 0;
     }
-    // set about timeout time to 8000 if not set
+    // set about timeout time to 12000 if not set
     if (abortTimeout.value === undefined) {
-      abortTimeout.value = 8000;
+      abortTimeout.value = 12000;
     }
 
     // timer
@@ -106,6 +108,9 @@ export const vueFetch = function vueFetch() {
         // json
         const collectingErrorsJson = await response.json();
 
+        // set backend form validation errors for requests POST, UPDATE etc.
+        validationProperties.value = collectingErrorsJson;
+
         // check if fetched data is a string. If true insert all values into isError.value
         if (typeof collectingErrorsJson === 'string') {
           // set error
@@ -118,14 +123,43 @@ export const vueFetch = function vueFetch() {
         }
 
         // check if fetched data is an object. If true insert all values into isError.value
-        if (
-          typeof collectingErrorsJson === 'object' &&
-          !Array.isArray(collectingErrorsJson) &&
-          collectingErrorsJson !== null
-        ) {
-          const errorObjToString =
-            Object.values(collectingErrorsJson).join(' ');
-          isError.value = `${errorObjToString}`;
+        if (isObject(collectingErrorsJson)) {
+          //
+          const errorsKeys = Object.keys(collectingErrorsJson);
+          // access values of collectingErrorsJson for checking is it contains nested objects or array
+          const errorsValues = Object.values(collectingErrorsJson);
+
+          // check if "collecting errors json" contains nested objects
+          // or arrays, "collecting errors json" is not gonna be included in isError
+          // "form validation errors" can be used to instead to access nested objects or array properties
+          if (errorsKeys.length > 0) {
+            //
+            for (let i = 0; i < errorsKeys.length; i++) {
+              if (Array.isArray(errorsValues[i])) {
+                // set "is error"
+                isError.value = `${err.message}`;
+                break;
+              }
+              if (isObject(errorsValues[i])) {
+                // set "is error"
+                isError.value = `${err.message}`;
+                break;
+              }
+              //
+              // if "collecting errors json" do not contains nested objects or arrays
+              if (
+                !Array.isArray(errorsValues[i]) &&
+                !isObject(errorsValues[i])
+              ) {
+                const errorObjToString =
+                  Object.values(collectingErrorsJson).join(' ');
+                // set "is error"
+                isError.value = `${errorObjToString}`;
+              }
+            }
+          }
+
+          //
         }
 
         // end if content type is application/json
@@ -145,6 +179,7 @@ export const vueFetch = function vueFetch() {
     isSuccess,
     isLoading,
     isError,
+    validationProperties,
     handleData,
     fetchedData,
   };

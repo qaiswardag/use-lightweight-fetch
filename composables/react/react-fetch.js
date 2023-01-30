@@ -34,9 +34,9 @@ export const reactFetch = function () {
     if (customFetchOptions.additionalCallTime === undefined) {
       customFetchOptions.additionalCallTime = 0;
     }
-    // set "abort timeout" time to 8000 ms if not set
+    // set "abort timeout" time to 12000 ms if not set
     if (customFetchOptions.abortTimeoutTime === undefined) {
-      customFetchOptions.abortTimeoutTime = 8000;
+      customFetchOptions.abortTimeoutTime = 12000;
     }
 
     // abort
