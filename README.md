@@ -21,7 +21,7 @@ Lightweight asynchronous data fetching hook for Vue 3. You can use this Hook for
   handleData,
   fetchedData,
   isError, // for flash messages like error, warning or success
-  validationProperties, // for form input errors, old input values or nested messagess
+  validationProperties, // for form input errors, old input values or nested messages
   isLoading,
   isSuccess,
 ```
@@ -36,8 +36,7 @@ const {
   handleData,
   fetchedData,
   isError,
-
-  ,
+  validationProperties,
   isLoading,
   isSuccess,
 } = vueFetch();
@@ -77,14 +76,21 @@ import { vueFetch } from 'use-lightweight-fetch';
 const pathPosts = 'https://jsonplaceholder.typicode.com/posts';
 
 // use vue fetch
-const { handleData, fetchedData, isError, isLoading, isSuccess } = vueFetch();
+const {
+  handleData,
+  fetchedData,
+  isError,
+  validationProperties,
+  isLoading,
+  isSuccess,
+} = vueFetch();
 
 onMounted(async () => {
   try {
     await handleData(
       pathPosts,
       {
-        method: 'GET', // GET, POST, PUT, DELETE, etc.
+        method: 'GET', // default method
       },
       // custom options
       {
