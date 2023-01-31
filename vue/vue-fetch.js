@@ -55,8 +55,8 @@ export const vueFetch = function vueFetch() {
         isLoading.value = false;
         isError.value = null;
 
+        // jump directly to the end of catch
         goDirectToError.value = true;
-
         // throw new error
         throw new Error(
           'Error 500. The loading time has been exceeded. Please refresh this page'
@@ -93,6 +93,7 @@ export const vueFetch = function vueFetch() {
       isError.value = null;
       // "fetched data" is null at this moment
 
+      // jump directly to the end of catch
       goDirectToError.value = true;
       // throw new error
       throw new Error('Error 500. No application/json in the request header');

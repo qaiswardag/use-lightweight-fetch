@@ -26,6 +26,22 @@ Lightweight asynchronous data fetching hook for Vue 3. You can use this Hook for
   isSuccess,
 ```
 
+## Quick Start
+
+1. Install package
+
+```
+npm i use-lightweight-fetch
+```
+
+2. Initialize use-lightweight-fetch
+
+```js
+import { vueFetch } from 'use-lightweight-fetch';
+```
+
+3. Use lightweight asynchronous data fetching hook
+
 ## Code example Vue 3 for POST request
 
 ```js
