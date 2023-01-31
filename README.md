@@ -41,30 +41,22 @@ const {
   isSuccess,
 } = vueFetch();
 
-const submitPost = async function () {
-  try {
-    await handleData(
-      '/posts',
-      {
-        method: 'POST', // GET, POST, PUT, DELETE, etc.
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
+const submitPost = function () {
+  handleData(
+    '/posts', // url
+    {
+      method: 'POST', // GET, POST, PUT, DELETE, etc.
+      headers: {
+        'Content-Type': 'application/json',
       },
-      // custom options
-      {
-        additionalCallTime: 300,
-        abortTimeoutTime: 8000,
-      }
-    );
-
-    // catch
-  } catch (err) {
-    // catch all types of backend error(s) on client side as a string for your app
-    isError.value = `${err}. ${isError.value ? isError.value : ''}`;
-    //
-  }
+      body: JSON.stringify(data),
+    },
+    // custom options
+    {
+      additionalCallTime: 300,
+      abortTimeoutTime: 8000,
+    }
+  );
 };
 ```
 
@@ -85,25 +77,17 @@ const {
   isSuccess,
 } = vueFetch();
 
-onMounted(async () => {
-  try {
-    await handleData(
-      pathPosts,
-      {
-        method: 'GET', // default method
-      },
-      // custom options
-      {
-        additionalCallTime: 300,
-        abortTimeoutTime: 8000,
-      }
-    );
-
-    // catch
-  } catch (err) {
-    // catch all types of backend error(s) on client side as a string for your app
-    isError.value = `${err}. ${isError.value ? isError.value : ''}`;
-    //
-  }
+onMounted(() => {
+  handleData(
+    pathPosts,
+    {
+      method: 'GET', // default method
+    },
+    // custom options
+    {
+      additionalCallTime: 300,
+      abortTimeoutTime: 8000,
+    }
+  );
 });
 ```
