@@ -1,12 +1,12 @@
 import { ref } from 'vue';
-import { usePromise } from '../../helpers/use-promise';
-import { isObject } from '../../helpers/is-object';
+import { usePromise } from '../helpers/use-promise';
+import { isObject } from '../helpers/is-object';
 export const vueFetch = function vueFetch() {
   // is success, is loading, is error, fetched data
   const isSuccess = ref(false);
   const isLoading = ref(false);
   const isError = ref(false);
-  const contentAppJSON = ref(false);
+  const goDirectToError = ref(false);
   const validationProperties = ref(null);
   const fetchedData = ref(null);
   // controller, additional time, abort time out
@@ -55,6 +55,8 @@ export const vueFetch = function vueFetch() {
         isLoading.value = false;
         isError.value = null;
 
+        goDirectToError.value = true;
+
         // throw new error
         throw new Error(
           'Error 500. The loading time has been exceeded. Please refresh this page'
@@ -74,7 +76,6 @@ export const vueFetch = function vueFetch() {
 
       // in request header check for application/json
       if (contentType.includes('application/json')) {
-        contentAppJSON.value = true;
         fetchedData.value = await response.json();
 
         clearTimeout(timer);
@@ -92,6 +93,7 @@ export const vueFetch = function vueFetch() {
       isError.value = null;
       // "fetched data" is null at this moment
 
+      goDirectToError.value = true;
       // throw new error
       throw new Error('Error 500. No application/json in the request header');
     } catch (err) {
@@ -102,8 +104,14 @@ export const vueFetch = function vueFetch() {
       // response
       const response = await fetch(url, fetchOptions);
 
+      // set variable for content type
+      const contentType = response.headers.get('content-type');
+
       // check if request is application/json in the request header
-      if (contentAppJSON.value === true) {
+      if (
+        contentType.includes('application/json') &&
+        goDirectToError.value !== true
+      ) {
         // json
         const collectingErrorsJson = await response.json();
 
@@ -123,10 +131,15 @@ export const vueFetch = function vueFetch() {
 
         // check if fetched data is an object. If true insert all values into isError.value
         if (isObject(collectingErrorsJson)) {
-          //
           const errorsKeys = Object.keys(collectingErrorsJson);
           // access values of collectingErrorsJson for checking is it contains nested objects or array
           const errorsValues = Object.values(collectingErrorsJson);
+
+          // check if "collecting errors json" is an empty object
+          // if true return response status code
+          if (errorsKeys.length === 0) {
+            isError.value = `Error ${response.status}.`;
+          }
 
           // check if "collecting errors json" contains nested objects
           // or arrays, "collecting errors json" is not gonna be included in isError
@@ -165,7 +178,10 @@ export const vueFetch = function vueFetch() {
       }
 
       // check if request is application/json in the request header
-      if (contentAppJSON.value === false) {
+      if (
+        !contentType.includes('application/json') ||
+        goDirectToError.value === true
+      ) {
         isError.value = `${err.message}`;
       }
 

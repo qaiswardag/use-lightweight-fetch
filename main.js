@@ -1,5 +1,2 @@
-import { vueFetch } from './composables/vue/vue-fetch';
+import { vueFetch } from './vue/vue-fetch';
 export { vueFetch };
-
-//import { reactFetch } from './composables/react/react-fetch';
-//export { vueFetch, reactFetch };
