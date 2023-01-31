@@ -5,7 +5,7 @@ Lightweight asynchronous data fetching hook for Vue 3. You can use this Hook for
 ## Quick Features
 
 - Data fetching (REST, promises).
-- Method to handle data, access fetched data, isError, isLoading, isSuccess.
+- Method to handle data, access fetched data, isError, isLoading, isSuccess and validation properties.
 - Is build for user experience in mind by being fast and high level of error handling.
 - Never let your users miss any backend error(s). Catch all backend error(s) from frameworks like Laravel, Flask, Express, Django and many more into one single string.
 - Can be used for all methods like GET, POST, PUT, DELETE, etc.

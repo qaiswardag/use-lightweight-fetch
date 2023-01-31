@@ -1,6 +1,6 @@
 {
   "name": "use-lightweight-fetch",
-  "version": "1.2.7",
+  "version": "1.2.8",
   "description": "Extremely lightweight asynchronous data fetching hook for Vue 3.",
   "main": "main.js",
   "scripts": {
