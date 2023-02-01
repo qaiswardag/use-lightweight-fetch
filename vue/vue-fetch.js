@@ -122,12 +122,14 @@ export const vueFetch = function vueFetch() {
         // check if fetched data is a string. If true insert all values into isError.value
         if (typeof collectingErrorsJson === 'string') {
           // set error
-          isError.value = `${err.message}. ${collectingErrorsJson}`;
+          isError.value = `Error status: ${err.message}. ${collectingErrorsJson}`;
         }
 
         // check if fetched data is an array. If true insert all values into isError.value
         if (Array.isArray(collectingErrorsJson)) {
-          isError.value = `${err.message}. ${collectingErrorsJson.join(' ')}`;
+          isError.value = `Error status: ${
+            err.message
+          }. ${collectingErrorsJson.join(' ')}`;
         }
 
         // check if fetched data is an object. If true insert all values into isError.value
@@ -139,7 +141,7 @@ export const vueFetch = function vueFetch() {
           // check if "collecting errors json" is an empty object
           // if true return response status code
           if (errorsKeys.length === 0) {
-            isError.value = `Error ${response.status}.`;
+            isError.value = `Error status: ${response.status}.`;
           }
 
           // check if "collecting errors json" contains nested objects
@@ -150,12 +152,12 @@ export const vueFetch = function vueFetch() {
             for (let i = 0; i < errorsKeys.length; i++) {
               if (Array.isArray(errorsValues[i])) {
                 // set "is error"
-                isError.value = `${err.message}`;
+                isError.value = `Error status: ${err.message}`;
                 break;
               }
               if (isObject(errorsValues[i])) {
                 // set "is error"
-                isError.value = `${err.message}`;
+                isError.value = `Error status: ${err.message}`;
                 break;
               }
               //
@@ -167,7 +169,7 @@ export const vueFetch = function vueFetch() {
                 const errorObjToString =
                   Object.values(collectingErrorsJson).join(' ');
                 // set "is error"
-                isError.value = `${err.message}. ${errorObjToString}`;
+                isError.value = `Error status: ${err.message}. ${errorObjToString}`;
               }
             }
           }
@@ -183,7 +185,7 @@ export const vueFetch = function vueFetch() {
         !contentType.includes('application/json') ||
         goDirectToError.value === true
       ) {
-        isError.value = `${err.message}`;
+        isError.value = `Error status: ${err.message}`;
       }
 
       // throw
