@@ -18,10 +18,7 @@ export const vueFetch = function vueFetch() {
   const handleData = async function (
     url,
     fetchOptions = {},
-    customFetchOptions = {
-      additionalCallTime,
-      abortTimeoutTime,
-    }
+    customFetchOptions = {}
   ) {
     // set variables
     abortTimeout.value = customFetchOptions.abortTimeoutTime;
