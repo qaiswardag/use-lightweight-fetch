@@ -6,8 +6,9 @@ export const vueFetch = function vueFetch() {
   const isSuccess = ref(false);
   const isLoading = ref(false);
   const isError = ref(false);
+  const error = ref(null);
+  const errors = ref(null);
   const goDirectToError = ref(false);
-  const validationProperties = ref(null);
   const fetchedData = ref(null);
   // controller, additional time, abort time out
   const controller = new AbortController();
@@ -50,7 +51,7 @@ export const vueFetch = function vueFetch() {
       if (controller.signal.aborted) {
         clearTimeout(timer);
         isLoading.value = false;
-        isError.value = null;
+        isError.value = false;
 
         // jump directly to the end of catch
         goDirectToError.value = true;
@@ -78,7 +79,7 @@ export const vueFetch = function vueFetch() {
         clearTimeout(timer);
         isSuccess.value = true;
         isLoading.value = false;
-        isError.value = null;
+        isError.value = false;
 
         // return "fetched data"
         return fetchedData.value;
@@ -87,7 +88,7 @@ export const vueFetch = function vueFetch() {
       clearTimeout(timer);
       isSuccess.value = true;
       isLoading.value = false;
-      isError.value = null;
+      isError.value = false;
       // "fetched data" is null at this moment
 
       // jump directly to the end of catch
@@ -98,6 +99,11 @@ export const vueFetch = function vueFetch() {
       clearTimeout(timer);
       isSuccess.value = false;
       isLoading.value = false;
+
+      // default error
+      isError.value = true;
+      error.value = `Not able to fetch data. Error status: ${err}.`;
+      errors.value = `Not able to fetch data. Error status: ${err}.`;
 
       // response
       const response = await fetch(url, fetchOptions);
@@ -114,22 +120,24 @@ export const vueFetch = function vueFetch() {
         const collectingErrorsJson = await response.json();
 
         // set backend form validation errors for requests POST, UPDATE etc.
-        validationProperties.value = collectingErrorsJson;
+        errors.value = collectingErrorsJson;
 
-        // check if fetched data is a string. If true insert all values into isError.value
+        // check if fetched data is a string.
         if (typeof collectingErrorsJson === 'string') {
           // set error
-          isError.value = `Not able to fetch data. Error status: ${err.message}. ${collectingErrorsJson}`;
+          isError.value = true;
+          error.value = `Not able to fetch data. Error status: ${err.message}. ${collectingErrorsJson}`;
         }
 
-        // check if fetched data is an array. If true insert all values into isError.value
+        // check if fetched data is an array.
         if (Array.isArray(collectingErrorsJson)) {
-          isError.value = `Not able to fetch data. Error status: ${
+          isError.value = true;
+          error.value = `Not able to fetch data. Error status: ${
             err.message
           }. ${collectingErrorsJson.join(' ')}`;
         }
 
-        // check if fetched data is an object. If true insert all values into isError.value
+        // check if fetched data is an object.
         if (isObject(collectingErrorsJson)) {
           const errorsKeys = Object.keys(collectingErrorsJson);
           // access values of collectingErrorsJson for checking is it contains nested objects or array
@@ -138,23 +146,24 @@ export const vueFetch = function vueFetch() {
           // check if "collecting errors json" is an empty object
           // if true return response status code
           if (errorsKeys.length === 0) {
-            isError.value = `Not able to fetch data. Error status: ${response.status}.`;
+            isError.value = true;
+            error.value = `Not able to fetch data. Error status: ${response.status}.`;
           }
 
           // check if "collecting errors json" contains nested objects
-          // or arrays, "collecting errors json" is not gonna be included in isError
-          // "form validation errors" can be used to instead to access nested objects or array properties
           if (errorsKeys.length > 0) {
             //
             for (let i = 0; i < errorsKeys.length; i++) {
               if (Array.isArray(errorsValues[i])) {
-                // set "is error"
-                isError.value = `Not able to fetch data. Error status: ${err.message}`;
+                // set error(s)
+                isError.value = true;
+                error.value = `Not able to fetch data. Error status: ${err.message}`;
                 break;
               }
               if (isObject(errorsValues[i])) {
-                // set "is error"
-                isError.value = `Not able to fetch data. Error status: ${err.message}`;
+                // set error(s)
+                isError.value = true;
+                error.value = `Not able to fetch data. Error status: ${err.message}`;
                 break;
               }
               //
@@ -165,8 +174,9 @@ export const vueFetch = function vueFetch() {
               ) {
                 const errorObjToString =
                   Object.values(collectingErrorsJson).join(' ');
-                // set "is error"
-                isError.value = `Not able to fetch data. Error status: ${err.message}. ${errorObjToString}`;
+                // set error(s)
+                isError.value = true;
+                error.value = `Not able to fetch data. Error status: ${err.message}. ${errorObjToString}`;
               }
             }
           }
@@ -182,7 +192,8 @@ export const vueFetch = function vueFetch() {
         !contentType.includes('application/json') ||
         goDirectToError.value === true
       ) {
-        isError.value = `Not able to fetch data. Error status: ${err.message}`;
+        isError.value = true;
+        error.value = `Not able to fetch data. Error status: ${err.message}`;
       }
 
       // throw
@@ -194,7 +205,8 @@ export const vueFetch = function vueFetch() {
     isSuccess,
     isLoading,
     isError,
-    validationProperties,
+    error,
+    errors,
     handleData,
     fetchedData,
   };

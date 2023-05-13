@@ -20,8 +20,9 @@ Lightweight asynchronous data fetching hook for Vue 3. You can use this Hook for
 ```js
   handleData,
   fetchedData,
-  isError, // for flash messages like error, warning or success
-  validationProperties, // for form input errors, old input values or nested messages
+  isError,
+  error, // string for flash messages like error or warning
+  errors, // for form input errors, old input values or nested error messages
   isLoading,
   isSuccess,
 ```
@@ -52,7 +53,8 @@ const {
   handleData,
   fetchedData,
   isError,
-  validationProperties,
+  error,
+  errors,
   isLoading,
   isSuccess,
 } = vueFetch();
@@ -88,7 +90,8 @@ const {
   handleData,
   fetchedData,
   isError,
-  validationProperties,
+  error,
+  errors,
   isLoading,
   isSuccess,
 } = vueFetch();
