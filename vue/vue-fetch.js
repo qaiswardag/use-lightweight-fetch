@@ -63,16 +63,31 @@ export const vueFetch = function vueFetch() {
 
       // Parse JSON response when content-type is 'application/json'
       const contentType = response.headers.get('content-type');
-      if (contentType.includes('application/json') === true) {
+
+      // Content-Type 'application/json'
+      if (contentType.includes('application/json')) {
         clearTimeout(timer);
         isSuccess.value = true;
         isLoading.value = false;
         isError.value = false;
+
         fetchedData.value = await response.json();
         return fetchedData.value;
       }
+      // Content-Type 'text/plain' or 'text/html'
+      if (
+        contentType.includes('text/plain') ||
+        contentType.includes('text/html')
+      ) {
+        clearTimeout(timer);
+        isSuccess.value = true;
+        isLoading.value = false;
+        isError.value = false;
 
-      // Handle non-GET requests without 'application/json' content-type
+        fetchedData.value = await response.text();
+        return fetchedData.value;
+      }
+      // Handle non-GET requests without 'application/json', 'text/plain' or 'text/html'
       if (
         fetchOptions?.method !== 'GET' &&
         fetchOptions?.method !== 'get' &&
@@ -85,14 +100,15 @@ export const vueFetch = function vueFetch() {
         fetchedData.value = 'Your request was processed successfully.';
         return 'Your request was processed successfully.';
       }
-
       // Handle GET requests without 'application/json' content-type
       clearTimeout(timer);
       isSuccess.value = true;
       isLoading.value = false;
       isError.value = false;
       goDirectToError.value = true;
-      throw new Error('Error 500. No application/json in the request header');
+      throw new Error(
+        "'Error 500. The request header must contain 'application/json', 'text/plain' or 'text/html'"
+      );
     } catch (err) {
       clearTimeout(timer);
       isSuccess.value = false;
@@ -110,7 +126,7 @@ export const vueFetch = function vueFetch() {
 
       // Handle errors when content type is 'application/json'
       if (
-        contentType.includes('application/json') === true &&
+        contentType.includes('application/json') &&
         goDirectToError.value !== true
       ) {
         // Parse the response body as JSON
