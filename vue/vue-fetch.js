@@ -65,7 +65,7 @@ export const vueFetch = function vueFetch() {
       const contentType = response.headers.get('content-type');
 
       // Content-Type 'application/json'
-      if (contentType.includes('application/json')) {
+      if (contentType !== null && contentType.includes('application/json')) {
         clearTimeout(timer);
         isSuccess.value = true;
         isLoading.value = false;
@@ -76,7 +76,7 @@ export const vueFetch = function vueFetch() {
       }
       // Content-Type 'text/plain' or 'text/html'
       if (
-        contentType.includes('text/plain') ||
+        (contentType !== null && contentType.includes('text/plain')) ||
         contentType.includes('text/html')
       ) {
         clearTimeout(timer);
@@ -126,6 +126,7 @@ export const vueFetch = function vueFetch() {
 
       // Handle errors when content type is 'application/json'
       if (
+        contentType !== null &&
         contentType.includes('application/json') &&
         goDirectToError.value !== true
       ) {
@@ -191,7 +192,8 @@ export const vueFetch = function vueFetch() {
 
       // If the response's Content-Type is not application/json, handle it accordingly
       if (
-        contentType.includes('application/json') === false ||
+        (contentType !== null &&
+          contentType.includes('application/json') === false) ||
         goDirectToError.value === true
       ) {
         isError.value = true;
